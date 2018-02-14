@@ -22,38 +22,25 @@
  * SOFTWARE.
  *
  */
-package jsastrawi.morphology.defaultimpl.visitor;
+package jsastrawi.morphology.defaultimpl.visitor.prefixrules;
 
-import jsastrawi.morphology.defaultimpl.Context;
-import jsastrawi.morphology.defaultimpl.Removal;
-import jsastrawi.morphology.defaultimpl.RemovalImpl;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import jsastrawi.morphology.defaultimpl.visitor.Disambiguator;
 
 /**
- * Remove Inflectional Particle (lah|kah|tah|pun)
+ * Disambiguate Prefix Rule 15b : men{V} -&gt; me-t{V}
  */
-public class RemoveInflectionalParticle implements ContextVisitor {
+public class PrefixRule15c implements Disambiguator {
 
     @Override
-    public void visit(Context context) {
-        String result = remove(context.getCurrentWord());
-
-        if (!result.equals(context.getCurrentWord())) {
-            String removedPart = context.getCurrentWord().replaceFirst(result, "");
-
-            Removal r = new RemovalImpl(this, context.getCurrentWord(), result, removedPart, "P");
-            context.addRemoval(r);
-            context.setCurrentWord(result);
+    public String disambiguate(String word) {
+        Matcher matcher = Pattern.compile("^n([aiueo])(.*)$").matcher(word);
+        if (matcher.find()) {
+            return "t" + matcher.group(1) + matcher.group(2);
         }
-    }
 
-    /**
-     * Remove inflectional particle from a word
-     *
-     * @param word word
-     * @return word after the derivational prefix has been removed
-     */
-    public String remove(String word) {
-        return word.replaceAll("(lah|kah|tah|pun|in|an)$", "");
+        return word;
     }
-
 }

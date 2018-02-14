@@ -6149,6 +6149,7 @@ dulang
 dulang-dulang
 duli
 dulur
+dulu
 dum
 dumdum
 dumi
