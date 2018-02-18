@@ -55,8 +55,7 @@ public class VisitorProvider {
         prefixVisitors.add(new RemovePlainPrefix()); // di|ke|se
         prefixVisitors.add(new PrefixDisambiguator(Arrays.asList(new Disambiguator[]{
             new PrefixRule1a(),
-            new PrefixRule1b(),
-            new PrefixRule1c(),})));
+            new PrefixRule1b(),})));
         prefixVisitors.add(new PrefixDisambiguator(new PrefixRule2()));
         prefixVisitors.add(new PrefixDisambiguator(new PrefixRule3()));
         prefixVisitors.add(new PrefixDisambiguator(new PrefixRule4()));
@@ -77,12 +76,8 @@ public class VisitorProvider {
         })));
         prefixVisitors.add(new PrefixDisambiguator(new PrefixRule14()));
         prefixVisitors.add(new PrefixDisambiguator(Arrays.asList(new Disambiguator[]{
-                new PrefixRule15a(),
-                new PrefixRule15b(),
-                new PrefixRule15c(),
-                new PrefixRule15d(),
-                new PrefixRule15e(),
-                new PrefixRule15f()
+            new PrefixRule15a(),
+            new PrefixRule15b()
         })));
         prefixVisitors.add(new PrefixDisambiguator(new PrefixRule16()));
         prefixVisitors.add(new PrefixDisambiguator(Arrays.asList(new Disambiguator[]{
