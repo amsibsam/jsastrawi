@@ -24,14 +24,12 @@
  */
 package jsastrawi.morphology.defaultimpl;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
+import java.util.*;
+
 import jsastrawi.morphology.defaultimpl.confixstripping.PrecedenceAdjustmentSpec;
 import jsastrawi.morphology.defaultimpl.visitor.ContextVisitor;
 import jsastrawi.morphology.defaultimpl.visitor.VisitorProvider;
+import jsastrawi.similarity.SimilarityWrapper;
 
 /**
  * Encapsulated context in lemmatizing a word
@@ -219,11 +217,44 @@ public class Context {
     }
 
     private void removePrefixes() {
+        boolean hasBeenFound = false;
         for (int i = 0; i < 3; i++) {
             acceptPrefixVisitors(prefixVisitors);
             if (dictionary.contains(currentWord)) {
+                hasBeenFound = true;
+                break;
+            }
+        }
+
+        if (hasBeenFound) {
+            return;
+        }
+
+
+        currentWord = originalWord;
+        for (int i=0; i<3; i++) {
+            Set<String> reversedDictionary = dictionary;
+            List<String> list = new ArrayList<>(reversedDictionary);
+            Collections.sort(list, Collections.reverseOrder());
+            reversedDictionary = new LinkedHashSet<>(list);
+
+            for (String wordInDictionary: reversedDictionary) {
+                double similarityDistance = SimilarityWrapper.getInstance().calculateDistance(currentWord, wordInDictionary);
+
+                char[] splitWordInDict = wordInDictionary.toCharArray();
+                char[] splitCurrentWord = currentWord.toCharArray();
+                if (similarityDistance == 1 && splitCurrentWord[0] == splitWordInDict[0]
+                        && wordInDictionary.length() >= currentWord.length()) {
+                    currentWord = wordInDictionary;
+                    return;
+                }
+            }
+
+            if (dictionary.contains(currentWord)) {
                 return;
             }
+
+            acceptPrefixVisitors(prefixVisitors);
         }
     }
 
