@@ -29,9 +29,9 @@ import jsastrawi.morphology.defaultimpl.Removal;
 import jsastrawi.morphology.defaultimpl.RemovalImpl;
 
 /**
- * Remove Plain Prefix (di|ke|se)
+ * Remove Inflectional Particle (lah|kah|tah|pun)
  */
-class RemovePlainPrefix implements ContextVisitor {
+public class RemoveInflectionalParticleNonFormal implements ContextVisitor {
 
     @Override
     public void visit(Context context) {
@@ -40,20 +40,20 @@ class RemovePlainPrefix implements ContextVisitor {
         if (!result.equals(context.getCurrentWord())) {
             String removedPart = context.getCurrentWord().replaceFirst(result, "");
 
-            Removal r = new RemovalImpl(this, context.getCurrentWord(), result, removedPart, "DP");
+            Removal r = new RemovalImpl(this, context.getCurrentWord(), result, removedPart, "P");
             context.addRemoval(r);
             context.setCurrentWord(result);
         }
     }
 
     /**
-     * Remove plain prefix from a word
+     * Remove inflectional particle from a word
      *
      * @param word word
-     * @return word after the plain prefix has been removed
+     * @return word after the derivational prefix has been removed
      */
     public String remove(String word) {
-        return word.replaceAll("^(di|ke|se)", "");
+        return word.replaceAll("(in|an)$", "");
     }
 
 }

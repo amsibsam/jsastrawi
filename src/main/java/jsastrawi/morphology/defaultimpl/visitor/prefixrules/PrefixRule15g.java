@@ -22,38 +22,25 @@
  * SOFTWARE.
  *
  */
-package jsastrawi.morphology.defaultimpl.visitor;
+package jsastrawi.morphology.defaultimpl.visitor.prefixrules;
 
-import jsastrawi.morphology.defaultimpl.Context;
-import jsastrawi.morphology.defaultimpl.Removal;
-import jsastrawi.morphology.defaultimpl.RemovalImpl;
+import jsastrawi.morphology.defaultimpl.visitor.Disambiguator;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Remove Plain Prefix (di|ke|se)
+ * Disambiguate Prefix Rule 15b : men{V} -&gt; me-t{V}
  */
-class RemovePlainPrefix implements ContextVisitor {
+public class PrefixRule15g implements Disambiguator {
 
     @Override
-    public void visit(Context context) {
-        String result = remove(context.getCurrentWord());
-
-        if (!result.equals(context.getCurrentWord())) {
-            String removedPart = context.getCurrentWord().replaceFirst(result, "");
-
-            Removal r = new RemovalImpl(this, context.getCurrentWord(), result, removedPart, "DP");
-            context.addRemoval(r);
-            context.setCurrentWord(result);
+    public String disambiguate(String word) {
+        Matcher matcher = Pattern.compile("^ng([aiueo])(.*)$").matcher(word);
+        if (matcher.find()) {
+            return "k" + matcher.group(1) + matcher.group(2);
         }
-    }
 
-    /**
-     * Remove plain prefix from a word
-     *
-     * @param word word
-     * @return word after the plain prefix has been removed
-     */
-    public String remove(String word) {
-        return word.replaceAll("^(di|ke|se)", "");
+        return word;
     }
-
 }

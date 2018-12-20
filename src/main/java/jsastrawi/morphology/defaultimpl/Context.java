@@ -24,11 +24,9 @@
  */
 package jsastrawi.morphology.defaultimpl;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
+import java.util.*;
+
+import info.debatty.java.stringsimilarity.Levenshtein;
 import jsastrawi.morphology.defaultimpl.confixstripping.PrecedenceAdjustmentSpec;
 import jsastrawi.morphology.defaultimpl.visitor.ContextVisitor;
 import jsastrawi.morphology.defaultimpl.visitor.VisitorProvider;
@@ -48,6 +46,7 @@ public class Context {
     private final List<ContextVisitor> suffixVisitors;
     private final List<ContextVisitor> prefixVisitors;
     private boolean processIsStopped;
+    private int trialCount = 1;
 
     /**
      * Constructor
@@ -133,8 +132,34 @@ public class Context {
         if (dictionary.contains(currentWord)) {
             result = currentWord;
         } else {
-            result = originalWord;
+            if (trialCount == 1) {
+                visitorProvider.addNonFormalVisitors();
+                startStemmingProcess();
+                startSimilarityProcess();
+                if (dictionary.contains(currentWord)) {
+                    result = currentWord;
+                } else {
+                    result = originalWord;
+                }
+            } else {
+                result = originalWord;
+            }
+            trialCount++;
         }
+    }
+
+    private void startSimilarityProcess() {
+        Levenshtein levenshtein = new Levenshtein();
+        List<String> possibilityWord = new ArrayList<>();
+
+        for (String dictWord: dictionary) {
+            double distance = levenshtein.distance(dictWord, currentWord);
+            if (distance == 1) {
+                possibilityWord.add(dictWord);
+            }
+        }
+
+        System.out.println("similarity completed");
     }
 
     private void startStemmingProcess() {

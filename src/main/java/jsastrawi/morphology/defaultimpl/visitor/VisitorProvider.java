@@ -177,4 +177,8 @@ public class VisitorProvider {
     public List<ContextVisitor> getPrefixVisitors() {
         return prefixVisitors;
     }
+
+    public void addNonFormalVisitors() {
+        suffixVisitors.add(new RemoveInflectionalParticleNonFormal());
+    }
 }

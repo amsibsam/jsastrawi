@@ -31,7 +31,7 @@ import jsastrawi.morphology.defaultimpl.RemovalImpl;
 /**
  * Remove Plain Prefix (di|ke|se)
  */
-class RemovePlainPrefix implements ContextVisitor {
+class RemovePlainPrefixNonFormal implements ContextVisitor {
 
     @Override
     public void visit(Context context) {
@@ -53,7 +53,7 @@ class RemovePlainPrefix implements ContextVisitor {
      * @return word after the plain prefix has been removed
      */
     public String remove(String word) {
-        return word.replaceAll("^(di|ke|se)", "");
+        return word.replaceAll("^(di|ke|se|nge)", "");
     }
 
 }

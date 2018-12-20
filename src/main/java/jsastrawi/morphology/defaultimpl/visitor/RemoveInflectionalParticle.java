@@ -53,7 +53,7 @@ public class RemoveInflectionalParticle implements ContextVisitor {
      * @return word after the derivational prefix has been removed
      */
     public String remove(String word) {
-        return word.replaceAll("(lah|kah|tah|pun|in|an)$", "");
+        return word.replaceAll("(lah|kah|tah|pun)$", "");
     }
 
 }
