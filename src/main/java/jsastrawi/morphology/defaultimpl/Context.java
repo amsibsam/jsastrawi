@@ -24,9 +24,14 @@
  */
 package jsastrawi.morphology.defaultimpl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import info.debatty.java.stringsimilarity.Levenshtein;
+import jsastrawi.morphology.Lemmatizer;
 import jsastrawi.morphology.defaultimpl.confixstripping.PrecedenceAdjustmentSpec;
 import jsastrawi.morphology.defaultimpl.visitor.ContextVisitor;
 import jsastrawi.morphology.defaultimpl.visitor.VisitorProvider;
@@ -47,6 +52,7 @@ public class Context {
     private final List<ContextVisitor> prefixVisitors;
     private boolean processIsStopped;
     private int trialCount = 1;
+    private Set<String> frequentlyUsedDictionary = new HashSet<String>();;
 
     /**
      * Constructor
@@ -65,6 +71,19 @@ public class Context {
         this.visitors = visitorProvider.getVisitors();
         this.suffixVisitors = visitorProvider.getSuffixVisitors();
         this.prefixVisitors = visitorProvider.getPrefixVisitors();
+
+
+        InputStream in = Lemmatizer.class.getResourceAsStream("/frequently-used.txt");
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                frequentlyUsedDictionary.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -135,11 +154,16 @@ public class Context {
             if (trialCount == 1) {
                 visitorProvider.addNonFormalVisitors();
                 startStemmingProcess();
-                startSimilarityProcess();
                 if (dictionary.contains(currentWord)) {
                     result = currentWord;
                 } else {
-                    result = originalWord;
+                    startSimilarityProcess();
+                    if (dictionary.contains(currentWord)) {
+                        result = currentWord;
+                        return;
+                    } else {
+                        result = originalWord;
+                    }
                 }
             } else {
                 result = originalWord;
@@ -150,16 +174,24 @@ public class Context {
 
     private void startSimilarityProcess() {
         Levenshtein levenshtein = new Levenshtein();
-        List<String> possibilityWord = new ArrayList<>();
+        List<String> possibilityWords = new ArrayList<>();
 
         for (String dictWord: dictionary) {
             double distance = levenshtein.distance(dictWord, currentWord);
             if (distance == 1) {
-                possibilityWord.add(dictWord);
+                possibilityWords.add(dictWord);
             }
         }
 
-        System.out.println("similarity completed");
+        if (possibilityWords.size() == 1) {
+            currentWord = possibilityWords.get(0);
+        } else {
+            for (String possibility: possibilityWords) {
+                if (frequentlyUsedDictionary.contains(possibility)) {
+                    currentWord = possibility;
+                }
+            }
+        }
     }
 
     private void startStemmingProcess() {
@@ -216,6 +248,12 @@ public class Context {
             return;
         }
 
+        startSimilarityProcess();
+
+        if (dictionary.contains(currentWord)) {
+            return;
+        }
+
         loopPengembalianAkhiran();
     }
 
@@ -260,6 +298,8 @@ public class Context {
 
             if (dictionary.contains(currentWord)) {
                 return;
+            } else {
+
             }
 
             if (processIsStopped) {

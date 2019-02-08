@@ -56,8 +56,12 @@ public class VisitorProvider {
         prefixVisitors.add(new PrefixDisambiguator(Arrays.asList(new Disambiguator[]{
             new PrefixRule1a(),
             new PrefixRule1b(),
-            new PrefixRule1c(),})));
-        prefixVisitors.add(new PrefixDisambiguator(new PrefixRule2()));
+            new PrefixRule1c(),
+        })));
+        prefixVisitors.add(new PrefixDisambiguator(Arrays.asList(new Disambiguator[]{
+                new PrefixRule2a(),
+                new PrefixRule2b()
+        })));
         prefixVisitors.add(new PrefixDisambiguator(new PrefixRule3()));
         prefixVisitors.add(new PrefixDisambiguator(new PrefixRule4()));
         prefixVisitors.add(new PrefixDisambiguator(new PrefixRule5()));
@@ -180,5 +184,6 @@ public class VisitorProvider {
 
     public void addNonFormalVisitors() {
         suffixVisitors.add(new RemoveInflectionalParticleNonFormal());
+        prefixVisitors.add(new RemovePlainPrefixNonFormal());
     }
 }

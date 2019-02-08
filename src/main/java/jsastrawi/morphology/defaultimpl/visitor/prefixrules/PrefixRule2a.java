@@ -26,19 +26,23 @@ package jsastrawi.morphology.defaultimpl.visitor.prefixrules;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import jsastrawi.morphology.defaultimpl.visitor.Disambiguator;
 
 /**
- * Disambiguate Prefix Rule 1b : berV -&gt; be-rV
+ * Disambiguate Prefix Rule 2 : berCAP -&gt; ber-CAP where C != 'r' AND P !=
+ * 'er'
  */
-public class PrefixRule1c implements Disambiguator {
+public class PrefixRule2a implements Disambiguator {
 
     @Override
     public String disambiguate(String word) {
-        Matcher matcher = Pattern.compile("^ng([aiuo].*)$").matcher(word);
+        Matcher matcher = Pattern.compile("^ber([bcdfghjklmnpqrstvwxyz])([a-z])(.*)$").matcher(word);
         if (matcher.find()) {
-            return matcher.group(1);
+            if (matcher.group(3).matches("^er(.*)$")) {
+                return word;
+            }
+
+            return matcher.group(1) + matcher.group(2) + matcher.group(3);
         }
 
         return word;
