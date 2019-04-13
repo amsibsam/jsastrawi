@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 import info.debatty.java.stringsimilarity.Levenshtein;
+import info.debatty.java.stringsimilarity.NGram;
 import jsastrawi.morphology.Lemmatizer;
 import jsastrawi.morphology.defaultimpl.confixstripping.PrecedenceAdjustmentSpec;
 import jsastrawi.morphology.defaultimpl.visitor.ContextVisitor;
@@ -173,22 +174,49 @@ public class Context {
     }
 
     private void startSimilarityProcess() {
+        // Inisialisasi kelas Levenhstein untuk melakukan perhitungan jarak
         Levenshtein levenshtein = new Levenshtein();
+
+        // Inisialisasi array list kosong untuk menyimpan kata dalam kamus
+        // yang memiliki jarak sebesar 1 dengan kata yang sudah diolah
         List<String> possibilityWords = new ArrayList<>();
 
+        // hitung jarak antara kata yang sudah diolah
+        // namun tidak berhasil ditemukan di kamus
+        // dengan semua kata yang ada di kamus
         for (String dictWord: dictionary) {
             double distance = levenshtein.distance(dictWord, currentWord);
+
+            // kata dalam kamus yang memiliki jarak sebesar 1
+            // dengan kata yang sudah diolah akan disimpan
+            // ke dalam possibilityWords
             if (distance == 1) {
                 possibilityWords.add(dictWord);
+                currentWord = dictWord;
+                return;
             }
         }
 
+
         if (possibilityWords.size() == 1) {
+            // jika possibilityWords hanya berisi 1 kata,
+            // maka kata tersebut dianggak kata dasar
             currentWord = possibilityWords.get(0);
         } else {
+            // jika possibilityWords berisi lebih dari 1 kata
+            // maka dilakukan pengecekan, untuk setiap kata
+            // di dalam possibilityWords akan di cek, apakah kata tersebut
+            // terkandung di dalam frequentlyUsedDictionary (kamus kata yang sering digunakan)
             for (String possibility: possibilityWords) {
                 if (frequentlyUsedDictionary.contains(possibility)) {
+                    // jika ditemukan kata di dalam possibilityWords yang terkandung di dalam
+                    // frequentlyUsedDictionary, maka kata tersebut dianggap sebagai kata dasar
                     currentWord = possibility;
+                    return;
+                } else {
+                    // jika tidak ditemukan di dalam frequentlyUsedDictionary
+                    // maka ambil kata pertama di dalam possibililtyWords
+                    currentWord = possibilityWords.get(0);
                 }
             }
         }

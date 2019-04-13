@@ -45,7 +45,7 @@ jika
 akan
 bagaimana
 kata
-an
+tukar
 masing-masing
 memberitahu
 tidak
@@ -57,7 +57,7 @@ baik
 juga
 bermain
 kecil
-end
+selamat
 menempatkan
 rumah
 baca
@@ -82,7 +82,7 @@ perubahan
 pergi
 cahaya
 jenis
-off
+sempat
 perlu
 rumah
 gambar
@@ -183,7 +183,7 @@ jumlah
 suara
 tidak
 sebagian besar
-orang
+seberang
 saya
 lebih dari
 tahu
@@ -485,7 +485,7 @@ pola
 lambat
 pusat
 cinta
-orang
+saran
 uang
 melayani
 muncul

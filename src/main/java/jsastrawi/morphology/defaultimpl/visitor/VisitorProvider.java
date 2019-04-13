@@ -142,8 +142,7 @@ public class VisitorProvider {
             new PrefixRule38b()
         })));
         prefixVisitors.add(new PrefixDisambiguator(Arrays.asList(new Disambiguator[]{
-            new PrefixRule39a(),
-            new PrefixRule39b()
+            new PrefixRule39a()
         })));
         prefixVisitors.add(new PrefixDisambiguator(Arrays.asList(new Disambiguator[]{
             new PrefixRule40a(),
