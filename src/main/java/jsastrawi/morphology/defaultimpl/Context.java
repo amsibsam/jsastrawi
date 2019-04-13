@@ -192,8 +192,6 @@ public class Context {
             // ke dalam possibilityWords
             if (distance == 1) {
                 possibilityWords.add(dictWord);
-                currentWord = dictWord;
-                return;
             }
         }
 
